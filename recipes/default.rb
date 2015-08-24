@@ -25,8 +25,10 @@ if node['keepalived']['shared_address']
     content "net.ipv4.ip_nonlocal_bind=1\n"
   end
 
-  service 'procps' do
-    action :start
+  # Note(JR): Hardcoded workaround for Vivid, start procps.service explicitly
+  # Chef's service resource will not start this because it is already active
+  execute 'start procps' do
+    command 'systemctl start procps.service'
   end
 end
 
