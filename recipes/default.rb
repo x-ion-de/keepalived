@@ -25,10 +25,11 @@ if node['keepalived']['shared_address']
     content "net.ipv4.ip_nonlocal_bind=1\n"
   end
 
-  # Note(JR): Hardcoded workaround for Vivid, start procps.service explicitly
-  # Chef's service resource will not start this because it is already active
-  execute 'start procps' do
-    command 'systemctl start procps.service'
+  # Note(JR): Do not fiddle with procps.service, which is explicitly meant to
+  # be started at boot time only.
+  # Directly set the variable we want instead.
+  execute 'set sysctl' do
+    command 'sysctl net.ipv4.ip_nonlocal_bind=1'
   end
 end
 
